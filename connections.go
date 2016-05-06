@@ -13,9 +13,9 @@ var mutex sync.Mutex
 func GetSession(keyspace string) *gocql.Session {
 	mutex.Lock()
 	defer mutex.Unlock()
+
 	session, ok := sessions[keyspace]
 	if ok == false {
-
 		if sessions == nil {
 			sessions = make(map[string]*gocql.Session)
 		}
@@ -25,5 +25,6 @@ func GetSession(keyspace string) *gocql.Session {
 		sessions[keyspace] = session
 		return session
 	}
+
 	return session
 }

@@ -1,0 +1,9 @@
+{
+    "data": {
+        "type": "query",
+        "keyspace": "emp",
+        "attributes": {
+            "query": "select * from emp;"
+        }
+    }
+}
