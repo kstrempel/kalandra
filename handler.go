@@ -31,10 +31,17 @@ type ResultMeta struct {
 	Time  int64
 }
 
+// Error
+type Error struct {
+	Title  string
+	Detail string
+}
+
 // Result jsonapi style
 type Result struct {
-	Data []map[string]interface{}
-	Meta ResultMeta
+	Data   []map[string]interface{} `json:"data,omitempty"`
+	Errors Error
+	Meta   ResultMeta
 }
 
 // Query handler
@@ -53,20 +60,30 @@ func Query(w http.ResponseWriter, r *http.Request) {
 	session := GetSession(query.Data.Keyspace)
 
 	// query the database
+	var jsonAPI Result
 	iter := session.Query(query.Data.Attributes.Query).Iter()
-	sliceMap, _ := iter.SliceMap()
-	var result []map[string]interface{}
-	for _, row := range sliceMap {
-		result = append(result, row)
+	sliceMap, err := iter.SliceMap()
+	if err != nil {
+		jsonAPI = Result{
+			Errors: Error{
+				Title:  "CQL Query Error",
+				Detail: err.Error()}}
+	} else {
+		var result []map[string]interface{}
+		for _, row := range sliceMap {
+			result = append(result, row)
+		}
+		jsonAPI = Result{
+			Data: result,
+		}
 	}
 
-	// build and send the answer back
+	// add meta data
 	timeNeeded := time.Now().Sub(start)
-	jsonApi := Result{
-		Data: result,
-		Meta: ResultMeta{
-			Query: query.Data.Attributes.Query,
-			Time:  timeNeeded.Nanoseconds()}}
-	jsonResult, err := json.Marshal(jsonApi)
+	jsonAPI.Meta = ResultMeta{
+		Query: query.Data.Attributes.Query,
+		Time:  timeNeeded.Nanoseconds()}
+
+	jsonResult, err := json.Marshal(jsonAPI)
 	fmt.Fprintln(w, string(jsonResult))
 }
