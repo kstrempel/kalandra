@@ -55,8 +55,9 @@ func Query(w http.ResponseWriter, r *http.Request) {
 	err := json.Unmarshal(body, &query)
 	if err != nil {
 		jsonAPI.Errors = Error{
-			Title:  "json error",
+			Title:  "JSON error",
 			Detail: err.Error()}
+		w.WriteHeader(http.StatusBadRequest)
 	} else {
 		// get session to cassandra
 		session := GetSession(query.Data.Keyspace)
@@ -68,6 +69,7 @@ func Query(w http.ResponseWriter, r *http.Request) {
 			jsonAPI.Errors = Error{
 				Title:  "CQL Query Error",
 				Detail: err.Error()}
+			w.WriteHeader(http.StatusBadRequest)
 		} else {
 			jsonAPI.Data = sliceMap
 		}
