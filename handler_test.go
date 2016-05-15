@@ -13,7 +13,7 @@ import (
 
 func setUp() {
 	cluster := gocql.NewCluster("127.0.0.1")
-	cluster.Keyspace = "dev"
+	cluster.Keyspace = "system"
 	session, _ := cluster.CreateSession()
 	defer session.Close()
 
