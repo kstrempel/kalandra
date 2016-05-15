@@ -1,6 +1,5 @@
 {
     "data": {
-        "type": "insert",
         "keyspace": "emp",
         "attributes": {
             "query": "insert into emp (empid, emp_dept, emp_first, emp_last) values (7, 'ita','marco','melanesie');"

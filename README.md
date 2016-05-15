@@ -16,7 +16,6 @@ A query looks like the following
     GET /query
     {
         "data": {
-            "type": "query",
             "keyspace": "dev",
             "attributes": {
                 "query": "select * from emp;"
