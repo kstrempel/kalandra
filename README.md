@@ -47,6 +47,7 @@ Kalandra uses the great [gocql](https://github.com/gocql/gocql) implementation t
 
     go get github.com/gocql/gocql
     go get github.com/gorilla/mux
+    go get github.com/Sirupsen/logrus
 
     go build
 
