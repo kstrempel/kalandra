@@ -1,7 +1,7 @@
 Kalandra
 ========
 
-[![Build Status](https://travis-ci.org/kstrempel/kalandra.svg?branch=master)](https://travis-ci.org/kstrempel/kalandra)
+[![Build Status](https://api.travis-ci.org/kstrempel/kalandra.svg?branch=master)](https://travis-ci.org/kstrempel/kalandra)
 
 ## Idea 
 
