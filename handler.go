@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	log "github.com/Sirupsen/logrus"
 	"io/ioutil"
 	"net/http"
 	"time"
@@ -52,6 +53,7 @@ func Query(w http.ResponseWriter, r *http.Request) {
 	// parse the body
 	start := time.Now()
 	body, _ := ioutil.ReadAll(r.Body)
+	log.Debugf("request: %s", body)
 	err := json.Unmarshal(body, &query)
 	if err != nil {
 		jsonAPI.Errors = Error{
@@ -80,6 +82,12 @@ func Query(w http.ResponseWriter, r *http.Request) {
 	jsonAPI.Meta = ResultMeta{
 		Query: query.Data.Attributes.Query,
 		Time:  timeNeeded.Nanoseconds()}
+
+	if jsonAPI.Errors == (Error{}) {
+		log.Infof("time: %v keyspace: %v query: %v", timeNeeded, query.Data.Keyspace, query.Data.Attributes.Query)
+	} else {
+		log.Errorf("time: %v error: %v reason: %v", timeNeeded, jsonAPI.Errors.Title, jsonAPI.Errors.Detail)
+	}
 
 	jsonResult, err := json.Marshal(jsonAPI)
 	fmt.Fprintln(w, string(jsonResult))
